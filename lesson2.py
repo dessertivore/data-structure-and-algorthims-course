@@ -10,30 +10,36 @@ name and email) for 100million users.
 Assume all usernames are unique.
 """
 
+
 # define User
 class User:
     def __init__(self, username: str, name: str, email: str):
         self.username = username
         self.name = name
         self.email = email
-        print('User',self.username,'created!')
-    
+        print("User", self.username, "created!")
+
     # define a method: introduce_yourself, which is a function which
     # can act on class
     def introduce_yourself(self, guest_name):
-        print("Hi {}, I'm {}! Contact me at {}.".format(guest_name, self.name, self.email))
+        print(
+            "Hi {}, I'm {}! Contact me at {}.".format(guest_name, self.name, self.email)
+        )
 
     def __repr__(self):
-        return "User: username = {}, name = {}, email = {}.".format(self.username, self.name, self.email)
-    
+        return "User: username = {}, name = {}, email = {}.".format(
+            self.username, self.name, self.email
+        )
+
     def __str__(self) -> str:
         return self.__repr__()
-    
-john = User('john', 'johndoe', 'john@test.com')
-jane = User('jane', 'jane doe', 'jane@doe.com')
-captainjl = User('captainjl', 'jean luc picard', 'jeanluc@picard.enterprise')
-kathrynj = User('kathrynj', 'captain kathryn janeway', 'kathryn@janeway.voyager')
-chrisp = User('chrisp', 'chris pike', 'chris@pike.enterprise')
+
+
+john = User("john", "johndoe", "john@test.com")
+jane = User("jane", "jane doe", "jane@doe.com")
+captainjl = User("captainjl", "jean luc picard", "jeanluc@picard.enterprise")
+kathrynj = User("kathrynj", "captain kathryn janeway", "kathryn@janeway.voyager")
+chrisp = User("chrisp", "chris pike", "chris@pike.enterprise")
 
 testusersdataset = [john, jane, captainjl, kathrynj]
 
@@ -45,13 +51,14 @@ testusersdataset = [john, jane, captainjl, kathrynj]
 # but str uses the repr method
 # print(john)
 
+
 class UserDatabase:
-    #initialise, with option to add initial user list
+    # initialise, with option to add initial user list
     # leave () when initialising to create blank UserDatabase
     def __init__(self, initialuserlist: list[User] = []) -> None:
         self.users = initialuserlist
 
-# insert in alphabetical order
+    # insert in alphabetical order
     def insert(self, user: User):
         username_error = False
         email_error = False
@@ -62,7 +69,7 @@ class UserDatabase:
             username_error = True
         else:
             raise ValueError("This username already exists.")
-        #check that email doesn't exist and raise error if it does
+        # check that email doesn't exist and raise error if it does
         try:
             self.find_by_email(user.email)
         except ValueError:
@@ -72,17 +79,19 @@ class UserDatabase:
         if username_error and email_error:
             i = 0
             while i < len(self.users):
-                #find first username greater than the user's
+                # find first username greater than the user's
                 if self.users[i].username > user.username:
                     break
                 i += 1
             self.users.insert(i, user)
+
     def find_by_username(self, username: str):
         for user in self.users:
             if user.username == username:
                 return user
         # raise value error if no user exists with that username
         raise ValueError(f"No username {username} exists.")
+
     def find_by_email(self, email: str):
         for user in self.users:
             if user.email == email:
@@ -93,6 +102,7 @@ class UserDatabase:
         # update user, keeping username the same
         target = self.find_by_username(user.username)
         target.name, target.email = user.name, user.email
+
     def list_all(self) -> list[User]:
         return self.users
 
@@ -100,8 +110,8 @@ class UserDatabase:
 test_database = UserDatabase(testusersdataset)
 test_database.insert(chrisp)
 
-test_database.update(User(username='john', name='john doe', email='jonnyboy@doe.com'))
-#find email and print result user
+test_database.update(User(username="john", name="john doe", email="jonnyboy@doe.com"))
+# find email and print result user
 # print(test_database.find_by_email('jane@doe.com'))
 
 # try to find user that doesn't exist- update function returns same error
@@ -110,19 +120,20 @@ test_database.update(User(username='john', name='john doe', email='jonnyboy@doe.
 # print(test_database.list_all())
 
 
-
 # trying to make a binary tree
 class Node:
     def __init__(self, value) -> None:
-        self.value = value 
+        self.value = value
         self.right: Node = None
         self.left: Node = None
 
-tree_tuple=((1,3,None),2,((None,3,4),5,(6,7,8)))
+
+tree_tuple = ((1, 3, None), 2, ((None, 3, 4), 5, (6, 7, 8)))
+
 
 def parse_tuple(data) -> Node:
     # add print(data) here to see the function parse all your tuples
-    if isinstance(data,tuple) and len(data) ==3:
+    if isinstance(data, tuple) and len(data) == 3:
         node = Node(data[1])
         # this is a recursive function!
         node.left = parse_tuple(data[0])
@@ -133,13 +144,14 @@ def parse_tuple(data) -> Node:
         node = Node(data)
     return node
 
-#make an example tree with data above
-exampletree = parse_tuple(tree_tuple)
-print(exampletree)
 
-# have a look at the different nodes 
+# make an example tree with data above
+exampletree = parse_tuple(tree_tuple)
+
+# have a look at the different nodes
 # this prints the value 2 down and right from the top
 print(exampletree.right.right.value)
+
 
 # convert tree to tuple
 def tree_to_tuple(node: Node) -> tuple:
@@ -152,15 +164,16 @@ def tree_to_tuple(node: Node) -> tuple:
     # if it has no left node but has a right node
     elif not node.left and node.right:
         return (None, node.value, tree_to_tuple(node.right))
-    #if no left or right nodes, then make this value into a tuple on its own- it's a leaf
+    # if no left or right nodes, then make this value into a tuple on its own- it's a leaf
     elif not node.left and not node.right:
         return (node.value,)
     # add this on just so it doesn't get stuck in a loop hopefully
     else:
         return None
-    
+
+
 print(tree_to_tuple(exampletree))
-    
+
 
 """
 Q3: write a function to perform the inorder traversal 
@@ -170,13 +183,12 @@ then right tree recursively inorder [visit all
 left nodes first]) of a binary tree
 """
 
-#traverse a tree in order
+
+# traverse a tree in order
 def traverse_in_order(node) -> list:
     if node is None:
         return []
-    return (traverse_in_order(node.left) +
-            [node.value] +
-            traverse_in_order(node.right))
+    return traverse_in_order(node.left) + [node.value] + traverse_in_order(node.right)
 
 
 """
@@ -187,18 +199,18 @@ and visit all of those top to bottom (starting
 with left branches)) of a binary tree
 """
 
+
 def traverse_preorder(node):
-   # will always stop when it reaches empty node
+    # will always stop when it reaches empty node
     if node is None:
         return []
-    
+
     result = [node.value]
     # go down all left branches
     result += traverse_preorder(node.left)
     # go down all right branches
     result += traverse_preorder(node.right)
     return result
-
 
 
 """
@@ -209,19 +221,18 @@ then go to right leaf and go all the way up
 right side, then go to root) of a binary tree
 """
 
+
 def traverse_postorder(node):
     if node is None:
         return []
-    
+
     result = []
 
     result += traverse_postorder(node.left)
     result += traverse_postorder(node.right)
-    
+
     result.append(node.value)
     return result
-
-print(traverse_postorder(exampletree))
 
 
 """
@@ -229,10 +240,11 @@ Write a function to calculate
 height/depth of binary tree
 """
 
+
 def heightcalc(node: Node) -> int:
     if not node.left and not node.right:
         return 1
-    
+
     height_l = 0
     height_r = 0
 
@@ -247,12 +259,21 @@ def heightcalc(node: Node) -> int:
 # a second option for calculating depth
 def height_calc(node: Node) -> int:
     if not node:
-    # if it is not a node - no depth
+        # if it is not a node - no depth
         return 0
     if not node.left and not node.right:
-    # base case - node with no children
+        # base case - node with no children
         return 1
     return 1 + max(height_calc(node.left), height_calc(node.right))
-    
 
-print (heightcalc(exampletree))
+
+"""
+Write a function to count the number
+of nodes on a binary tree
+"""
+
+
+def tree_size(node) -> int:
+    if node is None:
+        return 0
+    return 1 + tree_size(node.left) + tree_size(node.right)
