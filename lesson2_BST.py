@@ -1,3 +1,5 @@
+from lesson2 import User, john, kathrynj, chrisp
+
 """
 Create TreeNode class to encapsulate all of this-
 done by tutor
@@ -112,4 +114,141 @@ def find_min_max(node: TreeNode):
     return min_key, max_key
 
 
-print(find_min_max(Tree1))
+"""
+Make new class BSTNode with parents as well
+"""
+
+
+# value is optional, but would be e.g. of type User,
+# whilst key would be equivalent to username
+class BSTNode:
+    def __init__(self, key: str or int, value=None):
+        self.key = key
+        self.value = value
+        self.left = None
+        self.right = None
+        self.parent = None
+
+
+# to view level 1 if BSTNode called tree
+# print(tree.left.key, tree.left.value, tree.right.key, tree.right.value)
+
+"""
+QUESTION 11: Write a function to insert a new node 
+into a BST.
+"""
+
+
+def insert(node: BSTNode, value: User):
+    if node is None:
+        node = BSTNode(value.username, value)
+    elif value.username <= node.key:
+        node.left = insert(node.left, value)
+        node.left.parent = node
+    elif value.username > node.key:
+        node.right = insert(node.right, value)
+        node.right.parent = node
+    return node
+
+
+"""
+if tree is unbalanced, time complexity is O(N).
+If it is balanced, it will be O(logN)
+"""
+
+# initialise tree by adding first instance
+# order of insertion will affect tree structure
+tree = insert(None, kathrynj)
+insert(tree, john)
+insert(tree, chrisp)
+
+print(tree.key, tree.left.left.value)
+
+"""
+find a key
+"""
+
+
+def find(node: BSTNode, keysearch: str or int):
+    if node is None:
+        return None
+    if keysearch == node.key:
+        return node.value
+    if keysearch < node.key:
+        return find(node.left, keysearch)
+    if keysearch > node.key:
+        return find(node.right, keysearch)
+
+
+# for example print(find(tree, "john"))
+
+# The the length of the path followed by find
+# is equal to the height of the tree (in the worst case).
+# Thus it has a similar time complexity as insert.
+
+"""
+QUESTION 12: Write a function to update the 
+value associated with a given key within a BST
+"""
+
+
+def update(BST: BSTNode, key, new_value):
+    target = find(BST, key)
+    if target is not None:
+        target.value = new_value
+
+
+# see below for example of how to use this to update
+# john's name on his file.
+# update(tree, john, User('john', 'john coding expert, 'johnnyboy@doe.com'))
+
+"""
+QUESTION 13: Write a function to retrieve 
+all the key-values pairs stored in a BST in the 
+sorted order of keys.
+"""
+
+
+def list_all(node):
+    if node is None:
+        return []
+    # list all on left, list middle, list all on right
+    return list_all(node.left) + [(node.key, node.value)] + list_all(node.right)
+
+
+"""
+time and space complexity are both O(N) - 
+must list all keys so it must go through all of them.
+The space complexity of the list_all function is O(n) 
+as well. This is because it uses a recursive approach,
+and each recursive call adds a new frame to the call stack. 
+In the worst case, where the BST is completely unbalanced
+(essentially a linked list), there can be n recursive calls 
+on the call stack, leading to O(n) space complexity.
+"""
+
+"""
+QUESTION 14: Write a function to determine 
+if a binary tree is balanced.
+
+"""
+
+
+def balance_check(tree: BSTNode):
+    if tree is None:
+        # An empty tree is considered balanced
+        return True, 0
+
+    # Check the balance of the left and right subtrees
+    left_balanced, left_height = balance_check(tree.left)
+    right_balanced, right_height = balance_check(tree.right)
+
+    # Calculate the height of the current node
+    current_height = max(left_height, right_height) + 1
+
+    # Check if the left and right subtrees are balanced
+    is_balanced = (
+        left_balanced and right_balanced and abs(left_height - right_height) <= 1
+    )
+
+    return is_balanced, current_height

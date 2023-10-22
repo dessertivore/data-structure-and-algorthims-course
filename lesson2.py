@@ -35,7 +35,7 @@ class User:
         return self.__repr__()
 
 
-john = User("john", "johndoe", "john@test.com")
+john = User("john", "john doe", "john@test.com")
 jane = User("jane", "jane doe", "jane@doe.com")
 captainjl = User("captainjl", "jean luc picard", "jeanluc@picard.enterprise")
 kathrynj = User("kathrynj", "captain kathryn janeway", "kathryn@janeway.voyager")
