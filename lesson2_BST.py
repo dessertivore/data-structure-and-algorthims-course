@@ -45,7 +45,7 @@ class TreeNode:
         return "BinaryTree <{}>".format(self.to_tuple())
 
 
-def parse_tuple_to_tree(data) -> TreeNode:
+def parse_tuple_to_tree(data) -> TreeNode | None:
     # add print(data) here to see the function parse all your tuples
     if isinstance(data, tuple) and len(data) == 3:
         node = TreeNode(data[1])
@@ -87,10 +87,12 @@ binary_tree_tuple = ((1, 3, (4, 6, 7)), 8, (None, 10, ((13), 14, (None))))
 
 # make this tree into a TreeNode class, then print in order
 # to check what this output is like
-Tree1 = parse_tuple_to_tree(binary_tree_tuple)
-print(Tree1.traverse_in_order())
+tree1 = parse_tuple_to_tree(binary_tree_tuple)
+if not tree1:
+    raise ValueError
+print(tree1.traverse_in_order())
 
-print(check_bst(Tree1))
+print(check_bst(tree1))
 
 """
 Find maximum and minimum keys in a binary tree
@@ -122,12 +124,12 @@ Make new class BSTNode with parents as well
 # value is optional, but would be e.g. of type User,
 # whilst key would be equivalent to username
 class BSTNode:
-    def __init__(self, key: str or int, value=None):
+    def __init__(self, key: str, value=None):
         self.key = key
         self.value = value
-        self.left = None
-        self.right = None
-        self.parent = None
+        self.left: None | BSTNode = None
+        self.right: None | BSTNode = None
+        self.parent: None | BSTNode = None
 
 
 # to view level 1 if BSTNode called tree
@@ -139,7 +141,7 @@ into a BST.
 """
 
 
-def insert(node: BSTNode, value: User):
+def insert(node: BSTNode | None, value: User) -> BSTNode:
     if node is None:
         node = BSTNode(value.username, value)
     elif value.username <= node.key:
@@ -162,6 +164,10 @@ tree = insert(None, kathrynj)
 insert(tree, john)
 insert(tree, chrisp)
 
+if not tree.left:
+    raise ValueError
+if not tree.left.left:
+    raise ValueError
 print(tree.key, tree.left.left.value)
 
 """
@@ -169,7 +175,7 @@ find a key
 """
 
 
-def find(node: BSTNode, keysearch: str or int):
+def find(node: BSTNode | None, keysearch: str):
     if node is None:
         return None
     if keysearch == node.key:
@@ -234,7 +240,7 @@ if a binary tree is balanced.
 """
 
 
-def balance_check(tree: BSTNode):
+def balance_check(tree: BSTNode | None):
     if tree is None:
         # An empty tree is considered balanced
         return True, 0
@@ -252,3 +258,66 @@ def balance_check(tree: BSTNode):
     )
 
     return is_balanced, current_height
+
+
+"""
+QUESTION 15: Write a function to create a balanced 
+BST from a sorted list/array of key-value pairs.
+We can use a recursive strategy here, turning the 
+middle element of the list into the root, and recursively creating left and right subtrees.
+"""
+
+
+def make_balanced_bst(data: list, lo=0, hi=None, parent=None) -> BSTNode | None:
+    if hi is None:
+        hi = len(data) - 1
+    # make empty subtree if no elements left in sublist
+    if lo > hi:
+        return None
+
+    mid = (lo + hi) // 2
+    # extract data from middle of sublist
+    key, value = data[mid]
+    # use this data to make a BSTNode
+    root = BSTNode(key, value)
+    # if this is the middle, parent will be None
+    # anywhere else, and previous root is provided as parent
+    root.parent = parent
+    # lo remains the same, mid changes, to ensure left subtree only uses left of list
+    root.left = make_balanced_bst(data, lo, mid - 1, root)
+    root.right = make_balanced_bst(data, mid + 1, hi, root)
+
+    return root
+
+
+"""
+QUESTION 16: Write a function to balance an unbalanced binary search tree.
+"""
+
+
+def fix_unbalanced_BST(BSTNode):
+    return make_balanced_bst(list_all(BSTNode))
+
+
+"""
+After every insertion, we can balance the tree. This way the tree will remain balanced.
+
+Complexity of the various operations in a balanced BST:
+
+Insert - O(log N) + O(N) = O(N)
+Find - O(log N)
+Update - O(log N)
+List all - O(N)
+
+What's the real improvement between O(N) and O(log N)?
+
+for a list 100000000 long: log(100000000, 2) = 26.5754247590989
+The logarithm (base 2) of 100 million is around 26. 
+Thus, it takes only 26 operations to find or update a node 
+within a BST (as opposed to 100 million).
+
+To speed up insertions, we may choose to perform the balancing periodically 
+(e.g. once every 1000 insertions). This way, most insertions will be O (log N), 
+but every 1000th insertion will take a few seconds. 
+Another options is to rebalance the tree periodically at the end of every hour.
+"""

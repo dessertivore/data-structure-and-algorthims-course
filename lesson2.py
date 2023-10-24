@@ -1,14 +1,4 @@
-"""
-Q1: as a senior backend engineer, you are tasked
-with developing a fast in-memory data
-structure to manage profile info (username
-name and email) for 100million users.
-1. Insert profile information
-2. Find profile info of a user, given username
-3. update profile information of a user, given their username
-4. list all users of platform, sorted by username
-Assume all usernames are unique.
-"""
+# define class username
 
 
 # define User
@@ -40,8 +30,10 @@ jane = User("jane", "jane doe", "jane@doe.com")
 captainjl = User("captainjl", "jean luc picard", "jeanluc@picard.enterprise")
 kathrynj = User("kathrynj", "captain kathryn janeway", "kathryn@janeway.voyager")
 chrisp = User("chrisp", "chris pike", "chris@pike.enterprise")
+scotc = User("scotc", "scot chegg", "scot@egg.com")
 
 testusersdataset = [john, jane, captainjl, kathrynj]
+user_dataset_2 = [john, jane, captainjl, kathrynj, chrisp, scotc]
 
 # these 2 lines do the same thing
 # john.introduce_yourself('dave')
@@ -122,40 +114,42 @@ test_database.update(User(username="john", name="john doe", email="jonnyboy@doe.
 
 # trying to make a binary tree
 class Node:
-    def __init__(self, value) -> None:
+    def __init__(self, value):
         self.value = value
-        self.right: Node = None
-        self.left: Node = None
+        self.right = None
+        self.left = None
 
 
-tree_tuple = ((1, 3, None), 2, ((None, 3, 4), 5, (6, 7, 8)))
-
-
-def parse_tuple(data) -> Node:
+def parse_tuple(data: tuple | None) -> Node | None:
     # add print(data) here to see the function parse all your tuples
-    if isinstance(data, tuple) and len(data) == 3:
+    if data is None:
+        node = None
+    elif isinstance(data, tuple) and len(data) == 3:
         node = Node(data[1])
         # this is a recursive function!
         node.left = parse_tuple(data[0])
         node.right = parse_tuple(data[2])
-    elif data is None:
-        node = None
     else:
         node = Node(data)
     return node
 
 
+tree_tuple = ((1, 3, None), 2, ((None, 3, 4), 5, (6, 7, 8)))
 # make an example tree with data above
 exampletree = parse_tuple(tree_tuple)
 
 # have a look at the different nodes
 # this prints the value 2 down and right from the top
+if not exampletree:
+    raise ValueError
 print(exampletree.right.right.value)
 
 
 # convert tree to tuple
-def tree_to_tuple(node: Node) -> tuple:
+def tree_to_tuple(node: Node | None) -> tuple | None:
     # if it has both left and right nodes
+    if node is None:
+        return None
     if node.left and node.right:
         return (tree_to_tuple(node.left), node.value, tree_to_tuple(node.right))
     # if it has a left node but not a right node
@@ -277,3 +271,23 @@ def tree_size(node) -> int:
     if node is None:
         return 0
     return 1 + tree_size(node.left) + tree_size(node.right)
+
+
+# display keys with function below, from tutor
+def display_keys(node, space="\t", level=0):
+    # print(node.key if node else None, level)
+
+    # If the node is empty
+    if node is None:
+        print(space * level + "∅")
+        return
+
+    # If the node is a leaf
+    if node.left is None and node.right is None:
+        print(space * level + str(node.key))
+        return
+
+    # If the node has children
+    display_keys(node.right, space, level + 1)
+    print(space * level + str(node.key))
+    display_keys(node.left, space, level + 1)
