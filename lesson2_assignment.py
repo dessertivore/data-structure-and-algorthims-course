@@ -21,7 +21,7 @@ class HashTable:
     def insert(self, key: str, value: str):
         idx = get_index(self.data_list, key)
         # check if key is already at this index
-        if self.find(key) == None:
+        if not self.find(key):
             self.data_list[idx] = (key, value)
         # keep adding 1 until empty index reached
         else:  # Handle collisions using linear probing
@@ -151,7 +151,7 @@ class HashTableImproved:
             # Get the key-value pair stored at idx
             kv = self.data_list[idx]
             # If it is None, return the index
-            if kv == None:
+            if not kv:
                 return idx
             # If the stored key matches the given key, return the index
             if kv[0] == key:
@@ -184,7 +184,7 @@ class HashTableImproved:
     def __setitem__(self, key, value):
         # check if key exists
         # if not, create new entry
-        if self[key] == None:
+        if not self[key]:
             self.data_list[self.get_valid_index(key)] = (key, value)
             # if entry exists, replace entry at key's index with new value
         if self[key]:
