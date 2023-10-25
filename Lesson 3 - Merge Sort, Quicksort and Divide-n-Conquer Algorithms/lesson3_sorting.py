@@ -104,7 +104,7 @@ O(n) additional space i.e. the space complexity is O(n)
 
 
 """
-Another divide and conquer: quicksort - code from tutor
+Another divide and conquer: quicksort - code from online
 """
 
 
