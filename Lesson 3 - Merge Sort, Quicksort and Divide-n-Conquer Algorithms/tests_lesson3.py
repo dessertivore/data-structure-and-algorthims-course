@@ -2,6 +2,8 @@ import random
 import pytest
 from lesson3_sorting import merge_sort
 from lesson3_mainproblem import Notebook, quicksort_nbs, compare_likes
+from lesson3_assignment import poly_product
+
 
 tests = []
 longlist = list(range(10000))
@@ -53,3 +55,40 @@ test_notebooks.append([[], []])  # empty list
 def test_sort_notebooks(input_data) -> None:
     input, expected_output = input_data[0], input_data[1]
     assert quicksort_nbs(input) == expected_output
+
+
+tests_assignment: list = []
+tests_assignment.append(
+    {
+        "input": {"poly1": [2, 0, 5, 7], "poly2": [3, 4, 2]},
+        "output": [6, 8, 19, 41, 38, 14],
+    }
+)
+
+tests_assignment.append(
+    {
+        "input": {"poly1": [0, 0, 0], "poly2": [0, 0, 0]},
+        "output": [],
+    }
+)
+
+tests_assignment.append(
+    {
+        "input": {"poly1": [1, 1, 1], "poly2": [1, 1, 1]},
+        "output": [1, 2, 3, 2, 1],
+    }
+)
+
+tests_assignment.append(
+    {
+        "input": {"poly1": [1, 2, 3, 4], "poly2": [1, 2]},
+        "output": [1, 4, 7, 10, 8],
+    }
+)
+
+
+@pytest.mark.parametrize("input_data", tests_assignment)
+def test_assignment3(input_data) -> None:
+    input1, input2 = input_data["input"]["poly1"], input_data["input"]["poly2"]
+    expected_output = input_data["output"]
+    assert poly_product(input1, input2) == expected_output

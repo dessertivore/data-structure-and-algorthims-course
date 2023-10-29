@@ -74,3 +74,10 @@ def compare_titles(nb1: Notebook, nb2: Notebook) -> str:
 # print(sorted_alphabetically)
 
 print(quicksort_nbs(notebooks))
+
+
+"""
+Extra exercise:
+Implement and test generic versions of bubble sort, insertion sort and 
+quicksort for Notebook.likes
+"""
